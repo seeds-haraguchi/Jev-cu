@@ -5,7 +5,7 @@ node_modules/
 runs/
 .DS_Store
 
-# 内部材料与本地实验：不发布
+# 内部資料とローカル実験：公開しない
 PRD.md
 demos/
 example-email.json

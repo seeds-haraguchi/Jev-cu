@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
- * P0 离线评测：用保存的 AX 快照 + 标注的期望元素，测 Jev 的元素选择准确率。
+ * P0 オフライン評価：保存した AX スナップショットと期待要素のラベルから、Jev の要素選択精度を測定する。
  *
- * 用例文件 fixtures/p0/cases.json：
+ * ケースファイル fixtures/p0/cases.json：
  *   [{ "name": "...", "app": "Calendar", "goal": "...", "axFile": "fixtures/ax/calendar-month.txt",
  *      "expectedIndex": 56, "expectedLabelIncludes": "previous month" }]
  *
- * 用法：
- *   node scripts/p0-eval.mjs            # 跑全部用例
- *   node scripts/p0-eval.mjs --limit 3  # 只跑前 3 条
+ * 使用方法：
+ *   node scripts/p0-eval.mjs            # すべてのケースを実行
+ *   node scripts/p0-eval.mjs --limit 3  # 先頭 3 ケースだけ実行
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -23,7 +23,7 @@ const limit = limitArg > -1 ? Number(process.argv[limitArg + 1]) : Infinity;
 
 const cases = JSON.parse(fs.readFileSync(CASES_PATH, "utf8")).slice(0, limit);
 if (!cases.length) {
-  console.error("没有用例：请先填写 fixtures/p0/cases.json");
+  console.error("ケースがありません。fixtures/p0/cases.json を先に記入してください");
   process.exit(1);
 }
 
@@ -64,7 +64,7 @@ for (const c of cases) {
     candidates: candidates.length,
   });
   console.log(
-    `${hit ? "✅" : "❌"} ${c.name.padEnd(28)} 期望=${String(rows.at(-1).expected).padEnd(18)} 得到=${rows.at(-1).got}` +
+    `${hit ? "✅" : "❌"} ${c.name.padEnd(28)} 期待=${String(rows.at(-1).expected).padEnd(18)} 結果=${rows.at(-1).got}` +
       (error ? "" : `  conf=${rows.at(-1).conf?.toFixed?.(2) ?? "n/a"} ${rows.at(-1).ms}ms ${rows.at(-1).tokens}tok`),
   );
 }
@@ -76,14 +76,14 @@ const cost = rows.reduce((a, r) => a + (r.cost ?? 0), 0);
 const p50 = lat.length ? lat[Math.floor(lat.length / 2)] : null;
 
 console.log(
-  `\n准确率 ${ok.length}/${rows.length}` +
+    `\n精度 ${ok.length}/${rows.length}` +
     ` · p50 ${p50 ?? "n/a"}ms` +
-    ` · tokens ${tokens}` +
-    ` · 成本 ≈ $${cost.toFixed(6)}`,
+    ` · トークン ${tokens}` +
+    ` · 費用 ≈ $${cost.toFixed(6)}`,
 );
 
 const reportDir = path.join(PROJECT_DIR, "runs");
 fs.mkdirSync(reportDir, { recursive: true });
 const reportPath = path.join(reportDir, `p0-report-${new Date().toISOString().replace(/[:.]/g, "-")}.json`);
 fs.writeFileSync(reportPath, JSON.stringify({ generatedAt: new Date().toISOString(), accuracy: `${ok.length}/${rows.length}`, p50Ms: p50, tokens, costUsd: cost, rows }, null, 2));
-console.log(`报告：${reportPath}`);
+console.log(`レポート：${reportPath}`);

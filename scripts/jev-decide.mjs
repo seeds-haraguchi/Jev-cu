@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * Jev 决策封装（直连 TypeSafe API）。
+ * Jev の意思決定ラッパー（TypeSafe API へ直接接続）。
  *
- * - 读取 key：环境变量 TYPESAFE_API_KEY，或项目根目录 .env.local
- * - ask()   ：发一次 systemone 请求（可并发多问）
- * - decide()：Computer Use 循环用的标准四问（target/action/done/risk）
+ * - キーの読み取り：環境変数 TYPESAFE_API_KEY またはプロジェクトルートの .env.local
+ * - ask()   ：systemone リクエストを 1 回送信（複数の質問を並行可能）
+ * - decide()：Computer Use ループ用の標準 4 問（target/action/done/risk）
  *
- * CLI（调试用）：
+ * CLI（デバッグ用）：
  *   node scripts/jev-decide.mjs payload.json
  *   cat payload.json | node scripts/jev-decide.mjs
  */
@@ -18,7 +18,7 @@ const PROJECT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "
 
 export const DEFAULT_ENDPOINT = "https://api.typesafe.ai/v1/systemone";
 export const DEFAULT_MODEL = "jev-latest";
-/** 官方价：$42/Btok = $0.042/Mtok 输入；输出免费 */
+/** 公式価格：入力は $42/Btok = $0.042/Mtok、出力は無料。 */
 export const PRICE_PER_INPUT_TOKEN_USD = 0.042 / 1e6;
 
 export function loadApiKey({
@@ -34,9 +34,9 @@ export function loadApiKey({
       if (m && m[1] === envVar) return m[2].replace(/^['"]|['"]$/g, "").trim();
     }
   } catch {
-    /* 文件不存在时走统一报错 */
+    /* ファイルがない場合は共通のエラー処理へ進む。 */
   }
-  throw new Error(`未找到 ${envVar}：请设置环境变量，或写入 ${envFile}`);
+  throw new Error(`${envVar} が見つかりません。環境変数を設定するか、${envFile} に書き込んでください`);
 }
 
 export function estimateCostUsd(usage = {}) {
@@ -51,7 +51,7 @@ function toNumber(value) {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-/** 候选描述清洗：去掉 URL 等噪声，控制 token 体积（导出以便单测） */
+/** 候補の説明を整形する：URL などのノイズを除去し、トークン量を制限する（単体テスト用に export）。 */
 export function sanitizeLabel(text, max = 120) {
   return String(text ?? "")
     .replace(/\b(?:https?|orpheus|file|javascript|data):\S*/gi, "")
@@ -60,7 +60,7 @@ export function sanitizeLabel(text, max = 120) {
     .slice(0, max);
 }
 
-/** 构造循环用的四个标准问题（导出以便单测） */
+/** ループ用の標準 4 問を構築する（単体テスト用に export）。 */
 export function buildQuestions(goal, candidates = []) {
   const criteria = {};
   for (const c of candidates) criteria[`i${c.index}`] = sanitizeLabel(`${c.role}: ${c.label}`);
@@ -105,7 +105,7 @@ export function buildQuestions(goal, candidates = []) {
   };
 }
 
-/** 把 API answers 归一化成循环可用的结构（导出以便单测） */
+/** API の answers をループで使える形に正規化する（単体テスト用に export）。 */
 export function normalizeDecision(answers = {}, criteria = {}) {
   const targetKey = answers.target?.choice ?? null;
   const valid = typeof targetKey === "string" && /^i\d+$/.test(targetKey) && Object.hasOwn(criteria, targetKey);
@@ -166,7 +166,7 @@ export async function ask({
     const retryable = res.status === 429 || res.status >= 500;
     if (!retryable || attempt >= maxRetries) {
       const message = body?.detail?.message ?? body?.error?.message ?? JSON.stringify(body)?.slice(0, 200) ?? res.statusText;
-      const err = new Error(`Jev 调用失败 HTTP ${res.status}（${latencyMs}ms）：${message}`);
+      const err = new Error(`Jev の呼び出しに失敗しました HTTP ${res.status}（${latencyMs}ms）：${message}`);
       err.status = res.status;
       throw err;
     }
@@ -175,12 +175,12 @@ export async function ask({
 }
 
 /**
- * Computer Use 循环的标准决策入口。
+ * Computer Use ループの標準意思決定エントリーポイント。
  * @param {object} input
- * @param {string} input.goal 英文目标（Jev 英文最准）
+ * @param {string} input.goal 英語の目標（Jev は英語の方が正確）
  * @param {string} input.app
  * @param {Array<{index:number, role:string, label:string}>} input.candidates
- * @param {string} [input.context] 少量界面上下文（窗口标题/焦点行）
+ * @param {string} [input.context] 少量の画面コンテキスト（ウィンドウタイトル/フォーカス行）
  * @param {string[]} [input.recentActions]
  * @param {string} [input.constraints]
  */

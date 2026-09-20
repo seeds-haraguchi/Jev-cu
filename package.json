@@ -1,7 +1,7 @@
 {
   "name": "jev-cu",
   "version": "0.1.0",
-  "description": "Jev（TypeSafe System One）决策 + Codex Computer Use 执行：skill 与运行循环",
+  "description": "Jev（TypeSafe System One）による意思決定 + Codex Computer Use 実行：スキルと実行ループ",
   "private": true,
   "scripts": {
     "p0": "node scripts/p0-eval.mjs",

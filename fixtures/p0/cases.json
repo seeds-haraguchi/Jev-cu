@@ -1,83 +1,83 @@
 [
   {
-    "name": "Calendar 上个月",
+    "name": "Calendar: 先月",
     "app": "Calendar",
     "goal": "switch the calendar to the previous month",
     "axFile": "fixtures/ax/calendar-month.txt",
     "expectedIndex": 56
   },
   {
-    "name": "Calendar 下个月",
+    "name": "Calendar: 来月",
     "app": "Calendar",
     "goal": "switch the calendar to the next month",
     "axFile": "fixtures/ax/calendar-month.txt",
     "expectedIndex": 58
   },
   {
-    "name": "Calendar 回到今天",
+    "name": "Calendar: 今日に戻る",
     "app": "Calendar",
     "goal": "jump the calendar view back to today",
     "axFile": "fixtures/ax/calendar-month.txt",
     "expectedIndex": 57
   },
   {
-    "name": "Calendar 打开搜索",
+    "name": "Calendar: 検索を開く",
     "app": "Calendar",
     "goal": "open search in the calendar app",
     "axFile": "fixtures/ax/calendar-month.txt",
     "expectedIndex": 71
   },
   {
-    "name": "Calendar 切到周视图",
+    "name": "Calendar: 週表示に切り替え",
     "app": "Calendar",
     "goal": "switch the calendar view to the week view",
     "axFile": "fixtures/ax/calendar-month.txt",
     "expectedIndex": 68
   },
   {
-    "name": "Calculator 输入 6",
+    "name": "Calculator: 6 を入力",
     "app": "Calculator",
     "goal": "enter the digit 6",
     "axFile": "fixtures/ax/calculator.txt",
     "expectedIndex": 15
   },
   {
-    "name": "Calculator 乘法",
+    "name": "Calculator: 掛け算",
     "app": "Calculator",
     "goal": "press the multiply operator",
     "axFile": "fixtures/ax/calculator.txt",
     "expectedIndex": 12
   },
   {
-    "name": "Calculator 求结果",
+    "name": "Calculator: 結果を表示",
     "app": "Calculator",
     "goal": "evaluate the expression and show the result",
     "axFile": "fixtures/ax/calculator.txt",
     "expectedIndex": 24
   },
   {
-    "name": "Calculator 全部清除",
+    "name": "Calculator: すべて消去",
     "app": "Calculator",
     "goal": "clear everything and start over",
     "axFile": "fixtures/ax/calculator.txt",
     "expectedIndex": 6
   },
   {
-    "name": "网易云 搜索框",
+    "name": "NetEase: 検索フィールド",
     "app": "NetEaseMusic",
     "goal": "click the search field to search for a song",
     "axFile": "fixtures/ax/netease-home.txt",
     "expectedIndex": 7
   },
   {
-    "name": "网易云 下载管理",
+    "name": "NetEase: ダウンロード管理",
     "app": "NetEaseMusic",
     "goal": "open the download manager",
     "axFile": "fixtures/ax/netease-home.txt",
     "expectedIndex": 31
   },
   {
-    "name": "网易云 排行榜",
+    "name": "NetEase: ランキング",
     "app": "NetEaseMusic",
     "goal": "open the rankings page",
     "axFile": "fixtures/ax/netease-home.txt",
